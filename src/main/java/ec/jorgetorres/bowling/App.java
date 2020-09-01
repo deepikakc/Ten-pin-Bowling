@@ -3,12 +3,23 @@
  */
 package ec.jorgetorres.bowling;
 
-public class App {
-    public String getGreeting() {
-        return "Hello world.";
-    }
+import ec.jorgetorres.bowling.control.TenPinBowlingGame;
 
-    public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+public class App {
+  public String getGreeting() {
+    return "Hello world.";
+  }
+
+  public static void main(String[] args) {
+    if (args.length > 0) {
+      game(args[0]);
+    } else {
+      System.out.println("No se ha ingresado una ruta de archivo");
     }
+  }
+
+  public static void game(String path) {
+    new TenPinBowlingGame(path);
+  }
+
 }
