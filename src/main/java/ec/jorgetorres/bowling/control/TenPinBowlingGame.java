@@ -10,9 +10,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-public class TenPinBowlingGame {
-  private PoolofPlayers poolofPlayers = new PoolofPlayers();
-  private int gameIndex;
+public class TenPinBowlingGame implements IBowlingGame {
+  final private PoolofPlayers poolofPlayers = new PoolofPlayers();
+  final private int gameIndex;
 
   public TenPinBowlingGame(String path, int gameIndex) {
     this.gameIndex = gameIndex;
@@ -24,28 +24,29 @@ public class TenPinBowlingGame {
       }
     } catch (ExceededPinFallException e) {
       if (e.getPlayerName() != null) {
-        System.out.println(String.format("====== Game Number %d ended, Incorrect number of pins thrown ('%s', %d) for Game.",
-            gameIndex, e.getPlayerName(), e.getNumPinFall()));
+        System.out.printf("====== Game Number %d ended, Incorrect number of pins thrown ('%s', %d) for Game.%n",
+            gameIndex, e.getPlayerName(), e.getNumPinFall());
       } else {
-        System.out.println(String.format("====== Game Number %d ended, Incorrect number of pins thrown for Game.",
-            gameIndex));
+        System.out.printf("====== Game Number %d ended, Incorrect number of pins thrown for Game.%n",
+            gameIndex);
       }
     } catch (NotAllowedPinFallException e) {
-      System.out.println(String.format("====== Game Number %d ended, There has been not allowed or exceeding pinfall for Game.",
-          gameIndex));
+      System.out.printf("====== Game Number %d ended, There has been not allowed or exceeding pinfall for Game.%n",
+          gameIndex);
     } catch (NegativePinFallException e) {
-      System.out.println(String.format("====== Game Number %d ended, There has been negative pinfall ('%s', %d) for Game.",
-          gameIndex, e.getPlayerName(), e.getNumPinFall()));
+      System.out.printf("====== Game Number %d ended, There has been negative pinfall ('%s', %d) for Game.%n",
+          gameIndex, e.getPlayerName(), e.getNumPinFall());
     } catch (BadLineFormatException e) {
-      System.out.println(String.format("====== Game Number %d ended, Incorrect Game Text Line Formating for Game.",
-          gameIndex));
+      System.out.printf("====== Game Number %d ended, Incorrect Game Text Line Formating for Game.%n",
+          gameIndex);
     } catch (NumberFormatException e) {
-      System.out.println(String.format("====== Game Number %d ended, Incorrect Game Text Line Formating (%s) for Game.",
-          gameIndex, e.getMessage()));
+      System.out.printf("====== Game Number %d ended, Incorrect Game Text Line Formating (%s) for Game.%n",
+          gameIndex, e.getMessage());
     } catch (FileNotFoundException e) {
-      System.out.println(String.format("====== No file has been found for Game Number %d.\n", gameIndex));
+      System.out.printf("====== No file has been found for Game Number %d.\n%n", gameIndex);
     }
   }
+
 
   private void parseLine(String line) throws ExceededPinFallException,
       NotAllowedPinFallException, NumberFormatException, NegativePinFallException, BadLineFormatException {
@@ -65,10 +66,12 @@ public class TenPinBowlingGame {
     }
   }
 
+  @Override
   public void printGame() {
     this.poolofPlayers.printGame(gameIndex);
   }
 
+  @Override
   public PoolofPlayers getPoolofPlayers() {
     return poolofPlayers;
   }
