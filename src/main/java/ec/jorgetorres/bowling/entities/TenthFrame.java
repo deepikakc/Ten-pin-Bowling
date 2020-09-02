@@ -12,30 +12,6 @@ public class TenthFrame {
     this.setScore(0);
   }
 
-  public Roll getFirstRoll() {
-    return this.rolls[0];
-  }
-
-  public Roll getSecondRoll() {
-    return this.rolls[1];
-  }
-
-  public Roll getThirdRoll() {
-    return this.rolls[2];
-  }
-
-  public boolean firstRollTaken() {
-    return this.rolls[0] != null;
-  }
-
-  public boolean secondRollTaken() {
-    return this.rolls[1] != null;
-  }
-
-  public boolean thirdRollTaken() {
-    return this.rolls[2] != null;
-  }
-
   public void setSecondRoll(Roll roll) {
     this.rolls[1] = roll;
   }
@@ -59,6 +35,28 @@ public class TenthFrame {
       return 0;
     }
   }
+
+  public Roll getFirstRoll() {
+    return this.rolls[0];
+  }
+
+  public Roll getSecondRoll() {
+    return this.rolls[1];
+  }
+
+  public Roll getThirdRoll() {
+    return this.rolls[2];
+  }
+
+  public boolean firstRollTaken() {
+    return this.rolls[0] != null;
+  }
+
+  public boolean secondRollTaken() {
+    return this.rolls[1] != null;
+  }
+
+  public boolean thirdRollTaken() {  return this.rolls[2] != null; }
 
   public boolean isFirstCalculated() {
     return isFirstCalculated;

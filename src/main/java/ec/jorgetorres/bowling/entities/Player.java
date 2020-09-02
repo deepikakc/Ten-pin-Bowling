@@ -1,5 +1,8 @@
 package ec.jorgetorres.bowling.entities;
 
+import ec.jorgetorres.bowling.exceptions.ExceededPinFallException;
+import ec.jorgetorres.bowling.exceptions.NotAllowedPinFallException;
+
 import java.util.*;
 
 public class Player {
@@ -12,7 +15,9 @@ public class Player {
 
   private List<Roll> rolls = new ArrayList<>();
 
-  public Player(String name, int numberOfPinFall) {
+  public Player(String name, int numberOfPinFall) throws ExceededPinFallException {
+    if (numberOfPinFall > 10)
+      throw new ExceededPinFallException();
     this.name = name;
     Roll roll = new Roll(numberOfPinFall);
     this.normalFrames[frame] = new NormalFrame(roll);
@@ -30,7 +35,10 @@ public class Player {
     this.rolls.add(roll);
   }
 
-  public void addResult(int numberofPinFall) {
+  public void addResult(int numberofPinFall) throws ExceededPinFallException, NotAllowedPinFallException {
+    if (numberofPinFall > 10)
+      throw new ExceededPinFallException(this.name, numberofPinFall);
+
     Roll roll = new Roll(numberofPinFall);
     this.rolls.add(roll);
     if (frame < 9) {
@@ -48,7 +56,7 @@ public class Player {
     }
   }
 
-  public void addResult(String fault) {
+  public void addResult(String fault) throws ExceededPinFallException, NotAllowedPinFallException {
     Roll roll = new Roll(fault);
     this.rolls.add(roll);
     if (frame < 9) {
@@ -63,15 +71,15 @@ public class Player {
     }
   }
 
-  private void setTenthFrame(Roll roll) {
+  private void setTenthFrame(Roll roll) throws NotAllowedPinFallException {
     if (tenthFrame == null) {
       tenthFrame = new TenthFrame(roll);
     } else if (tenthFrame.firstRollTaken()) {
       if (tenthFrame.secondRollTaken()) {
-        if (tenthFrame.getPartialScore() >= 10) {
+        if (tenthFrame.getPartialScore() >= 10 && !tenthFrame.thirdRollTaken()) {
           tenthFrame.setThirdRoll(roll);
         } else {
-          return;
+          throw new NotAllowedPinFallException();
         }
       } else {
         tenthFrame.setSecondRoll(roll);
@@ -132,7 +140,7 @@ public class Player {
         tenthFrame.setScore(totalScore);
         this.score = totalScore;
         tenthFrame.setSecondCalculated(true);
-      } else if (!tenthFrame.isThirdCalculated()) {
+      } else if (tenthFrame.thirdRollTaken() && !tenthFrame.isThirdCalculated()) {
         int totalScore = this.score + tenthFrame.getThirdRoll().getScore();
         tenthFrame.setScore(totalScore);
         this.score = totalScore;
@@ -143,20 +151,27 @@ public class Player {
 
   public void printPinFalls() {
     for (int i = 0; i < 9; i++) {
-      if (normalFrames[i].isStrike()){
-        System.out.print("\t\tX");
-      } else {
-        if (normalFrames[i].getFirstRoll().isFault()) {
-          System.out.print("\tF");
+      if (normalFrames[i] != null) {
+        if (normalFrames[i].isStrike()){
+          System.out.print("\t\tX");
         } else {
-          System.out.print("\t"+normalFrames[i].getFirstRoll().getScore());
-        }
-        if (normalFrames[i].isSpare()) {
-          System.out.print("\t/");
-        } else if (normalFrames[i].getSecondRoll().isFault()) {
-          System.out.print("\tF");
-        } else {
-          System.out.print("\t"+normalFrames[i].getSecondRoll().getScore());
+          if (normalFrames[i].firstRollTaken()) {
+            if (normalFrames[i].getFirstRoll().isFault()) {
+              System.out.print("\tF");
+            } else {
+              System.out.print("\t"+normalFrames[i].getFirstRoll().getScore());
+            }
+          }
+
+          if (normalFrames[i].secondRollTaken()) {
+            if (normalFrames[i].isSpare()) {
+              System.out.print("\t/");
+            } else if (normalFrames[i].getSecondRoll().isFault()) {
+              System.out.print("\tF");
+            } else {
+              System.out.print("\t"+normalFrames[i].getSecondRoll().getScore());
+            }
+          }
         }
       }
     }
@@ -198,8 +213,11 @@ public class Player {
   }
 
   public void printScore() {
-    for (int i = 0; i < 9; i++)
-      System.out.print("\t\t"+normalFrames[i].getScore());
+    for (int i = 0; i < 9; i++) {
+      if (normalFrames[i] != null)
+        System.out.print("\t\t"+normalFrames[i].getScore());
+    }
+
     if (tenthFrame != null)
       System.out.print("\t\t"+tenthFrame.getScore());
   }

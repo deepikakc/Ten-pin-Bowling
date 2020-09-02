@@ -1,5 +1,7 @@
 package ec.jorgetorres.bowling.entities;
 
+import ec.jorgetorres.bowling.exceptions.ExceededPinFallException;
+
 public class NormalFrame {
   private Roll[] rolls = new Roll[2];
   private int score;
@@ -10,9 +12,9 @@ public class NormalFrame {
     this.setScore(0);
   }
 
-  public void setLatestRoll(Roll roll) {
+  public void setLatestRoll(Roll roll) throws ExceededPinFallException {
     if ((rolls[0].getScore() + roll.getScore()) > 10) {
-      // Break game
+      throw new ExceededPinFallException();
     } else {
       this.rolls[1] = roll;
     }
@@ -20,6 +22,10 @@ public class NormalFrame {
 
   public boolean firstRollTaken() {
     return this.rolls[0] != null;
+  }
+
+  public boolean secondRollTaken() {
+    return this.rolls[1] != null;
   }
 
   public boolean isSpare() {
