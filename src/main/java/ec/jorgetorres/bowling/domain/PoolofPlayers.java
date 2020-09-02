@@ -3,25 +3,23 @@ package ec.jorgetorres.bowling.domain;
 import ec.jorgetorres.bowling.entities.Player;
 import ec.jorgetorres.bowling.exceptions.ExceededPinFallException;
 import ec.jorgetorres.bowling.exceptions.NotAllowedPinFallException;
+import ec.jorgetorres.bowling.utils.Players;
 
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class PoolofPlayers {
-  private Queue<Player> poolOfPlayers;
+  final private Queue<Player> poolOfPlayers;
   public PoolofPlayers() {
     this.poolOfPlayers = new LinkedList<>();
   }
 
-  public void addResult(String name, int numberOfPinFall) throws ExceededPinFallException, NotAllowedPinFallException {
-    Player playerFound = poolOfPlayers.stream()
-        .filter(player -> player.getName().equals(name))
-        .findAny()
-        .orElse(null);
+  public void addPinFall(String name, int numberOfPinFall) throws ExceededPinFallException, NotAllowedPinFallException {
+    Player playerFound = Players.findPlayer(getPoolOfPlayers(), name);
     if (playerFound == null) {
       Player newPlayer = new Player(name, numberOfPinFall);
       newPlayer.calculateScore();
-      poolOfPlayers.add(newPlayer);
+      getPoolOfPlayers().add(newPlayer);
     } else {
       playerFound.addResult(numberOfPinFall);
       playerFound.calculateScore();
@@ -29,14 +27,11 @@ public class PoolofPlayers {
   }
 
   public void addFault(String name, String fault) throws ExceededPinFallException, NotAllowedPinFallException{
-    Player playerFound = poolOfPlayers.stream()
-        .filter(player -> player.getName().equals(name))
-        .findAny()
-        .orElse(null);
+    Player playerFound = Players.findPlayer(getPoolOfPlayers(), name);
     if (playerFound == null) {
       Player newPlayer = new Player(name, fault);
       newPlayer.calculateScore();
-      poolOfPlayers.add(newPlayer);
+      getPoolOfPlayers().add(newPlayer);
     } else {
       playerFound.addResult(fault);
       playerFound.calculateScore();
@@ -44,10 +39,10 @@ public class PoolofPlayers {
   }
 
   public void printGame(int gameIndex) {
-    System.out.println(String.format("====== Game Number %d", gameIndex));
+    System.out.printf("====== Game Number %d%n", gameIndex);
     System.out.println("Frame\t\t1\t\t2\t\t3\t\t4\t\t5\t\t6\t\t7\t\t8\t\t9\t\t10");
-    while(!poolOfPlayers.isEmpty())
-      printPlayer(poolOfPlayers.poll());
+    while(!getPoolOfPlayers().isEmpty())
+      printPlayer(getPoolOfPlayers().poll());
     System.out.println();
   }
 
@@ -59,5 +54,9 @@ public class PoolofPlayers {
     System.out.print("Score");
     player.printScore();
     System.out.println();
+  }
+
+  public Queue<Player> getPoolOfPlayers() {
+    return poolOfPlayers;
   }
 }
