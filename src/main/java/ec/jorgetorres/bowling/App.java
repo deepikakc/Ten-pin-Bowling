@@ -17,8 +17,8 @@ public class App {
     }
   }
 
-  //public static void game(String path, int gameIndex) { -rightcode
-	public static void game(String path, int gamIndex) {
+  public static void game(String path, int gameIndex) {
+	
     new TenPinBowlingGame(path, gameIndex).printGame();
   }
 
