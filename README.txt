@@ -23,5 +23,3 @@ Integration Tests
 
 Unit Tests
 ./gradlew :test --tests "ec.jorgetorres.bowling.TenPinBowlingTestCase"
-
-## Test by Deepika KC
