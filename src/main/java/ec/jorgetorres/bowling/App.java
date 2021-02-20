@@ -17,9 +17,10 @@ public class App {
     }
   }
 
-  public static void game(String path, int gameIndex) {
-	
-    new TenPinBowlingGame(path, gameIndex).printGame();
+  //public static void game(String path, int gameIndex) {
+	public static void game(String path, int gIndex) {
+    //new TenPinBowlingGame(path, gameIndex).printGame();
+new TenPinBowlingGame(path, gIndex).printGame();
   }
 
 }
